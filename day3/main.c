@@ -6,6 +6,7 @@ int main(void){
   int **spiral;
   int *center;
 
+  center = malloc(2*sizeof(int));
   if(!read(&input))
     return -1;
 
@@ -23,8 +24,9 @@ int main(void){
   }
 
   /* Part 2 */
-  int pos[2] = {300,301};
+  int pos[2] = {center[0], center[1]};
   int new_num = 0;
+  spiral[pos[0]][pos[1]] = -1;
   for(int nstep = 1; new_num < input && pos[0] >= 0 && pos[1] >= 0; nstep++){
     for(int coord = 1; coord >= 0; coord--){
       for(int s = 0; s < nstep && new_num < input; s++){
@@ -36,17 +38,19 @@ int main(void){
 
         /* Neighborhood */
         int neigh = 0;
-        for(int k = (pos[0]-1 < 0)?pos[0]:pos[0]-1; k <= pos[0]+1 && k < size; k++)
-          for(int l = (pos[1]-1 < 0)?pos[1]:pos[1]-1; l <= pos[1]+1 && l < size; l++)
+        for(int k = pos[0]-1; k <= pos[0]+1; k++){
+          for(int l = pos[1]-1; l <= pos[1]+1; l++){
             if(l >= 0 && k >= 0 && spiral[k][l] < 0){
-                neigh += spiral[k][l];
+              neigh += spiral[k][l];
             }
-        printf("%d", neigh);
+          }
+        }
         spiral[pos[0]][pos[1]] = neigh;
         new_num = abs(neigh);
       }
     }
   }
+
   fprintf(stdout, "Part_1: %d\n", steps);
   fprintf(stdout, "Part_2: %d\n", new_num);
   del_spiral(spiral, size);
